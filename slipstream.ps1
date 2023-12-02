@@ -85,3 +85,18 @@ assign letter="H"
 select Partition 2
 format fs="NTFS" quick label="INSTALL"
 assign letter="I"
+
+
+<# Creating an ISO File
+Copy the ISO to C:\InstallationMedia
+Replace C:\InstallationMedia\sources\boot.wim with updated version
+Replace C:\InstallationMedia\sources\install.wim with updated version
+
+Run the script:
+https://github.com/TheDotSource/New-ISOFile/blob/main/New-ISOFile.ps1 
+#>
+
+# More Sensible Title
+New-ISOFile -source "C:\InstallationMedia" -destinationIso "C:\Win11_23H2_EnglishInternational_x64_Drivers.iso" -bootFile "C:\InstallationMedia\efi\microsoft\boot\efisys.bin" -title "Win11_23H2_EnglishUK"
+# Original Title
+New-ISOFile -source "C:\InstallationMedia" -destinationIso "C:\Win11_23H2_EnglishInternational_x64_Drivers.iso" -bootFile "C:\InstallationMedia\efi\microsoft\boot\efisys.bin" -title "CCCOMA_X64FRE_EN-GB_DV9"
