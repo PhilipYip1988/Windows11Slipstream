@@ -53,6 +53,17 @@ for($dummyvar=1; $dummyvar -le 1; $dummyvar++)
     dism /Unmount-WIM /MountDir:"C:\InstallTemp" /Commit
 }
 
+<#
+Download the latest 
+Cumulative Update for Windows 11 for x64-based Systems
+Cumulative Update for .NET Framework 3.5 and 4.8.1 for Windows 11 for x64-based Systems
+https://www.catalog.update.microsoft.com/Search.aspx?q=cumulative%20update%20for%2023h2%20x64 
+Copy the latest updates to C:\InstallUpdates 
+Modify and add the line below to the for loop before unmounting the install.wim.
+#>
+
+dism /Image:"C:\InstallTemp" /Add-Package /PackagePath="C:\InstallUpdates\windows11.0-kb5032190-x64_fdbd38c60e7ef2c6adab4bf5b508e751ccfbd525.msu" /PackagePath="C:\InstallUpdates\windows11.0-kb5032006-x64-ndp481_298da3126424149e3c1f488e964507ed1e7b2505.msu"
+
 <# For loop to slipstream the drivers to all indexes. This may take a long time to run. #>
 
 for($idx=1; $idx -le 11; $idx++)
