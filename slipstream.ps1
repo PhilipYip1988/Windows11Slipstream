@@ -1,25 +1,22 @@
-<# Test for loop
-#>
+<# Test for loop 
+run code and check output #>
 for($idx=1; $idx -le 3; $idx++)
 {
 echo "loop index is $idx"
 }
 
-<# boot.wim
-Should be copied to C:\
-Right click select Properties and uncheck read only
+<# Boot Drivers
+Download Dell Command | Deploy WinPE Driver Pack
+The WinPE contains Storage and Network Controllers
+Copy the .CAB file to C:\ then update the name of your .CAB file and run #>
+expand "C:\WinPE10.0-Drivers-A25-F0XPX.CAB" -f:* "C:\BootDriversExpanded"
+<# Copy the contents of the x64 to C:\BootDrivers #>
 
-Dell IntelRST Driver should be extracted and the subfolder corresponding to the systems SATA Operation
-VMD, RAID or AHCI should be copied as a subfolder in C:\BootDrivers
-
-Note copying the drivers folder will slipstream all the drivers but the wrong driver may be used in the Windows setup resulting in it being unable to read the drive
-#>
-
-# Details about the boot.wim indexes
+<# Details about the boot.wim indexes #>
 
 dism /Get-WimInfo /WimFile:"C:\boot.wim"
 
-# For loop to slipstream the drivers
+<# For loop to slipstream the drivers #>
 
 for($idx=1; $idx -le 2; $idx++)
 {
@@ -40,14 +37,13 @@ If the package is a cab file opposed to a Dell Update Package for example like t
 expand "C:\9365-win10-A14-GXYTC.CAB" -f:* "C:\InstallDrivers"
 
 
-substituting the file name with the name of the .CAB file.
-#>
+substituting the file name with the name of the .CAB file. #>
 
-# Details about install.wim indexes.
+<# Details about install.wim indexes. #>
 
 dism /Get-WimInfo /WimFile:"C:\install.wim"
 
-# For loop to slipstream the drivers to a single index, update $idx to the index for desired edition.
+<# For loop to slipstream the drivers to a single index, update $idx to the index for desired edition. #>
 
 $idx = 6
 for($dummyvar=1; $dummyvar -le 1; $dummyvar++)
@@ -57,7 +53,7 @@ for($dummyvar=1; $dummyvar -le 1; $dummyvar++)
     dism /Unmount-WIM /MountDir:"C:\InstallTemp" /Commit
 }
 
-# For loop to slipstream the drivers to all indexes. This may take a long time to run.
+<# For loop to slipstream the drivers to all indexes. This may take a long time to run. #>
 
 for($idx=1; $idx -le 11; $idx++)
 {
@@ -75,7 +71,7 @@ list disk
 select disk 1
 convert GPT
 clean
-# create partitions
+<# create partitions #>
 create partition primary size=1024
 create partition primary
 list partition
@@ -93,10 +89,8 @@ Replace C:\InstallationMedia\sources\boot.wim with updated version
 Replace C:\InstallationMedia\sources\install.wim with updated version
 
 Run the script:
-https://github.com/TheDotSource/New-ISOFile/blob/main/New-ISOFile.ps1 
-#>
+https://github.com/TheDotSource/New-ISOFile/blob/main/New-ISOFile.ps1 #>
 
-# More Sensible Title
+<# Run either, the first uses a more sensible title, the second sues the original #>
 New-ISOFile -source "C:\InstallationMedia" -destinationIso "C:\Win11_23H2_EnglishInternational_x64_Drivers.iso" -bootFile "C:\InstallationMedia\efi\microsoft\boot\efisys.bin" -title "Win11_23H2_EnglishUK"
-# Original Title
 New-ISOFile -source "C:\InstallationMedia" -destinationIso "C:\Win11_23H2_EnglishInternational_x64_Drivers.iso" -bootFile "C:\InstallationMedia\efi\microsoft\boot\efisys.bin" -title "CCCOMA_X64FRE_EN-GB_DV9"
