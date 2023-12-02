@@ -14,15 +14,15 @@ expand "C:\WinPE10.0-Drivers-A25-F0XPX.CAB" -f:* "C:\BootDriversExpanded"
 
 <# Details about the boot.wim indexes #>
 
-dism /Get-WimInfo /WimFile:"C:\boot.wim"
+Dism /Get-WimInfo /WimFile:"C:\boot.wim"
 
 <# For loop to slipstream the drivers #>
 
 for($idx=1; $idx -le 2; $idx++)
 {
-    dism /Mount-WIM /WimFile:"C:\boot.wim" /index:$idx /MountDir:"C:\BootTemp"
-    dism /Image:"C:\BootTemp" /Add-Driver /Driver:"C:\BootDrivers" /Recurse
-    dism /Unmount-WIM /MountDir:"C:\BootTemp" /Commit
+    Dism /Mount-WIM /WimFile:"C:\boot.wim" /index:$idx /MountDir:"C:\BootTemp"
+    Dism /Image:"C:\BootTemp" /Add-Driver /Driver:"C:\BootDrivers" /Recurse
+    Dism /Unmount-WIM /MountDir:"C:\BootTemp" /Commit
 }
 
 <# install.wim
@@ -41,16 +41,16 @@ substituting the file name with the name of the .CAB file. #>
 
 <# Details about install.wim indexes. #>
 
-dism /Get-WimInfo /WimFile:"C:\install.wim"
+Dism /Get-WimInfo /WimFile:"C:\install.wim"
 
 <# For loop to slipstream the drivers to a single index, update $idx to the index for desired edition. #>
 
 $idx = 6
 for($dummyvar=1; $dummyvar -le 1; $dummyvar++)
 {
-    dism /Mount-WIM /WimFile:"C:\install.wim" /index:$idx /MountDir:"C:\InstallTemp"
-    dism /Image:"C:\InstallTemp" /Add-Driver /Driver:"C:\InstallDrivers" /Recurse
-    dism /Unmount-WIM /MountDir:"C:\InstallTemp" /Commit
+    Dism /Mount-WIM /WimFile:"C:\install.wim" /index:$idx /MountDir:"C:\InstallTemp"
+    Dism /Image:"C:\InstallTemp" /Add-Driver /Driver:"C:\InstallDrivers" /Recurse
+    Dism /Unmount-WIM /MountDir:"C:\InstallTemp" /Commit
 }
 
 <#
@@ -62,15 +62,15 @@ Copy the latest updates to C:\InstallUpdates
 Modify and add the line below to the for loop before unmounting the install.wim.
 #>
 
-dism /Image:"C:\InstallTemp" /Add-Package /PackagePath="C:\InstallUpdates\windows11.0-kb5032190-x64_fdbd38c60e7ef2c6adab4bf5b508e751ccfbd525.msu" /PackagePath="C:\InstallUpdates\windows11.0-kb5032006-x64-ndp481_298da3126424149e3c1f488e964507ed1e7b2505.msu"
+Dism /Image:"C:\InstallTemp" /Add-Package /PackagePath="C:\InstallUpdates\windows11.0-kb5032190-x64_fdbd38c60e7ef2c6adab4bf5b508e751ccfbd525.msu" /PackagePath="C:\InstallUpdates\windows11.0-kb5032006-x64-ndp481_298da3126424149e3c1f488e964507ed1e7b2505.msu"
 
 <# For loop to slipstream the drivers to all indexes. This may take a long time to run. #>
 
 for($idx=1; $idx -le 11; $idx++)
 {
-    dism /Mount-WIM /WimFile:"C:\install.wim" /index:$idx /MountDir:"C:\InstallTemp"
-    dism /Image:"C:\InstallTemp" /Add-Driver /Driver:"C:\InstallDrivers" /Recurse
-    dism /Unmount-WIM /MountDir:"C:\InstallTemp" /Commit
+    Dism /Mount-WIM /WimFile:"C:\install.wim" /index:$idx /MountDir:"C:\InstallTemp"
+    Dism /Image:"C:\InstallTemp" /Add-Driver /Driver:"C:\InstallDrivers" /Recurse
+    Dism /Unmount-WIM /MountDir:"C:\InstallTemp" /Commit
 }
 
 <# Partition a USB Flash Drive to create:
