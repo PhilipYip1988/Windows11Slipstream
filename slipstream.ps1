@@ -5,52 +5,61 @@ for($idx=1; $idx -le 3; $idx++)
 echo "loop index is $idx"
 }
 
+<# Validate ISO, update with ISO file name #>
+Get-FileHash "~\Downloads\Win11_23H2_EnglishInternational_x64.iso"
+
 <# Boot Drivers
 Download Dell Command | Deploy WinPE Driver Pack
 The WinPE contains Storage and Network Controllers
-Copy the .CAB file to C:\ then update the name of your .CAB file and run #>
-expand "C:\WinPE10.0-Drivers-A25-F0XPX.CAB" -f:* "C:\BootDriversExpanded"
-<# Copy the contents of the x64 to C:\BootDrivers #>
+Update the name of your .CAB file and run #>
+expand "~\Downloads\WinPE10.0-Drivers-A25-F0XPX.CAB" -f:* "~\Downloads\BootDriversExpanded"
+<# Copy the contents of the x64 to ~\Downloads\BootDrivers#>
+
+<#boot.wim
+Mount the ISO and go to the sources folder
+Copy the boot.wim to ~\Downloads
+Right click select Properties and uncheck read only
+#>
 
 <# Details about the boot.wim indexes #>
 
-Dism /Get-WimInfo /WimFile:"C:\boot.wim"
+Dism /Get-WimInfo /WimFile:"~\Downloads\boot.wim"
 
 <# For loop to slipstream the drivers #>
 
 for($idx=1; $idx -le 2; $idx++)
 {
-    Dism /Mount-WIM /WimFile:"C:\boot.wim" /index:$idx /MountDir:"C:\BootTemp"
-    Dism /Image:"C:\BootTemp" /Add-Driver /Driver:"C:\BootDrivers" /Recurse
-    Dism /Unmount-WIM /MountDir:"C:\BootTemp" /Commit
+    Dism /Mount-WIM /WimFile:"~\Downloads\boot.wim" /index:$idx /MountDir:"~\Downloads\BootTemp"
+    Dism /Image:"~\Downloads\BootTemp" /Add-Driver /Driver:"~\Downloads\BootDrivers" /Recurse
+    Dism /Unmount-WIM /MountDir:"~\Downloads\BootTemp" /Commit
 }
 
-<# install.wim
-Should be copied to C:\
+<# Install Drivers
+Download Dell Command | Deploy Driver Pack
+This pack contains All Drivers
+Most are Dell Update Packages and run to extract. Older ones may eb CAB files.
+Update the name of your .CAB file and run #>
+expand "~\Downloads\WinPE10.0-Drivers-A25-F0XPX.CAB" -f:* "~\Downloads\InstallDriversExpanded"
+<# Copy the contents of the x64 to ~\Downloads\InstallDrivers#>
+
+<#install.wim
+Mount the ISO and go to the sources folder
+Copy the boot.wim to ~\Downloads
 Right click select Properties and uncheck read only
-
-Dell Command | Deploy Driver Pack should be extracted and the contents of the x64 subfolder
-should be copied as a subfolder in C:\InstallDrivers
-
-If the package is a cab file opposed to a Dell Update Package for example like the case with the older XPS-9365. Copy the .CAB to C:\ and run:
-
-expand "C:\9365-win10-A14-GXYTC.CAB" -f:* "C:\InstallDrivers"
-
-
-substituting the file name with the name of the .CAB file. #>
+#>
 
 <# Details about install.wim indexes. #>
 
-Dism /Get-WimInfo /WimFile:"C:\install.wim"
+Dism /Get-WimInfo /WimFile:"~\Downloads\install.wim"
 
 <# For loop to slipstream the drivers to a single index, update $idx to the index for desired edition. #>
 
 $idx = 6
 for($dummyvar=1; $dummyvar -le 1; $dummyvar++)
 {
-    Dism /Mount-WIM /WimFile:"C:\install.wim" /index:$idx /MountDir:"C:\InstallTemp"
-    Dism /Image:"C:\InstallTemp" /Add-Driver /Driver:"C:\InstallDrivers" /Recurse
-    Dism /Unmount-WIM /MountDir:"C:\InstallTemp" /Commit
+    Dism /Mount-WIM /WimFile:"~\Downloads\install.wim" /index:$idx /MountDir:"~\Downloads\InstallTemp"
+    Dism /Image:"~\Downloads\InstallTemp" /Add-Driver /Driver:"~\Downloads\InstallDrivers" /Recurse
+    Dism /Unmount-WIM /MountDir:"~\Downloads\InstallTemp" /Commit
 }
 
 <#
@@ -58,19 +67,19 @@ Download the latest
 Cumulative Update for Windows 11 for x64-based Systems
 Cumulative Update for .NET Framework 3.5 and 4.8.1 for Windows 11 for x64-based Systems
 https://www.catalog.update.microsoft.com/Search.aspx?q=cumulative%20update%20for%2023h2%20x64 
-Copy the latest updates to C:\InstallUpdates 
+Copy the latest updates to ~\Downloads\InstallUpdates 
 Modify and add the line below to the for loop before unmounting the install.wim.
 #>
 
-Dism /Image:"C:\InstallTemp" /Add-Package /PackagePath="C:\InstallUpdates\windows11.0-kb5032190-x64_fdbd38c60e7ef2c6adab4bf5b508e751ccfbd525.msu" /PackagePath="C:\InstallUpdates\windows11.0-kb5032006-x64-ndp481_298da3126424149e3c1f488e964507ed1e7b2505.msu"
+Dism /Image:"~\Downloads\InstallTemp" /Add-Package /PackagePath="~\Downloads\InstallUpdates\windows11.0-kb5032190-x64_fdbd38c60e7ef2c6adab4bf5b508e751ccfbd525.msu" /PackagePath="~\Downloads\InstallUpdates\windows11.0-kb5032006-x64-ndp481_298da3126424149e3c1f488e964507ed1e7b2505.msu"
 
 <# For loop to slipstream the drivers to all indexes. This may take a long time to run. #>
 
 for($idx=1; $idx -le 11; $idx++)
 {
-    Dism /Mount-WIM /WimFile:"C:\install.wim" /index:$idx /MountDir:"C:\InstallTemp"
-    Dism /Image:"C:\InstallTemp" /Add-Driver /Driver:"C:\InstallDrivers" /Recurse
-    Dism /Unmount-WIM /MountDir:"C:\InstallTemp" /Commit
+    Dism /Mount-WIM /WimFile:"~\Downloads\install.wim" /index:$idx /MountDir:"~\Downloads\InstallTemp"
+    Dism /Image:"~\Downloads\InstallTemp" /Add-Driver /Driver:"~\Downloads\InstallDrivers" /Recurse
+    Dism /Unmount-WIM /MountDir:"~\Downloads\InstallTemp" /Commit
 }
 
 <# Partition a USB Flash Drive to create:
@@ -95,13 +104,13 @@ assign letter="I"
 
 
 <# Creating an ISO File
-Copy the ISO to C:\InstallationMedia
-Replace C:\InstallationMedia\sources\boot.wim with updated version
-Replace C:\InstallationMedia\sources\install.wim with updated version
+Copy the ISO to ~\Downloads\InstallationMedia
+Replace ~\Downloads\InstallationMedia\sources\boot.wim with updated version
+Replace ~\Downloads\InstallationMedia\sources\install.wim with updated version
 
 Run the script:
 https://github.com/TheDotSource/New-ISOFile/blob/main/New-ISOFile.ps1 #>
 
 <# Run either, the first uses a more sensible title, the second sues the original #>
-New-ISOFile -source "C:\InstallationMedia" -destinationIso "C:\Win11_23H2_EnglishInternational_x64_Drivers.iso" -bootFile "C:\InstallationMedia\efi\microsoft\boot\efisys.bin" -title "Win11_23H2_EnglishUK"
-New-ISOFile -source "C:\InstallationMedia" -destinationIso "C:\Win11_23H2_EnglishInternational_x64_Drivers.iso" -bootFile "C:\InstallationMedia\efi\microsoft\boot\efisys.bin" -title "CCCOMA_X64FRE_EN-GB_DV9"
+New-ISOFile -source "~\Downloads\InstallationMedia" -destinationIso "~\Downloads\Win11_23H2_EnglishInternational_x64_Drivers.iso" -bootFile "~\Downloads\InstallationMedia\efi\microsoft\boot\efisys.bin" -title "Win11_23H2_EnglishUK"
+New-ISOFile -source "~\Downloads\InstallationMedia" -destinationIso "~\Downloads\Win11_23H2_EnglishInternational_x64_Drivers.iso" -bootFile "~\Downloads\InstallationMedia\efi\microsoft\boot\efisys.bin" -title "CCCOMA_X64FRE_EN-GB_DV9"
