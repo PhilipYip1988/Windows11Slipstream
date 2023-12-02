@@ -1,12 +1,12 @@
 # Windows 11 Installation Media Slipstream Script
 
-The purpose of this repository is to slipstream the Intel Rapid Storage Technology Drivers and the Dell Command Deploy Driver Pack into Windows 11 Installation Media
+The purpose of this repository is to slipstream the Dell Command PE Driver Pack to the boot.wim and the Dell Command Driver Pack to the install.wim of Windows 11 Installation Media
 
 The direct ISO download must be used for this purpose:
 
 [Windows 11 Software Download Page](https://www.microsoft.com/software-download/windows11)
 
-The Intel Rapid Storage Technology Driver (under the Storage category) and the Dell Command Driver Pack (under the Systems Management Category) can be downloaded from:
+The Dell Command PE Driver Pack and Dell Command Driver Pack are found under the Systems Management Category of the Business Systems Drivers and Downloads Page:
 
 [Dell Drivers and Downloads](https://www.dell.com/support/home/en-uk?app=drivers)
 
