@@ -16,7 +16,7 @@ dir
 Download Dell Command | Deploy WinPE Driver Pack
 The WinPE contains Storage and Network Controllers
 Update the name of your .CAB file and run #>
-expand ".\WinPE11.0-Drivers-A00-5DWN3.CAB" -f:* ".\BootDriversExpanded"
+expand "Downloads\WinPE11.0-Drivers-A00-5DWN3.CAB" -f:* "Downloads\BootDriversExpanded"
 <# Copy the contents of the x64 to Downloads\BootDrivers#>
 
 <#boot.wim
@@ -90,8 +90,9 @@ for($idx=1; $idx -le 11; $idx++)
 A FAT32 BOOT Partition (required for the USB to show as a BOOT Device on the UEFI Boot Menu for some systems)
 A NTFS Install Partition #>
 diskpart
+<# Run each diskpart command individually in the PowerShell Terminal#>
 list disk
-# change to disk number of USB Flash Drive
+<# change to disk number of USB Flash Drive #>
 select disk 1
 convert GPT
 clean
@@ -105,16 +106,15 @@ assign letter="H"
 select Partition 2
 format fs="NTFS" quick label="INSTALL"
 assign letter="I"
-
+exit
 
 <# Creating an ISO File
 Copy the ISO to Downloads\InstallationMedia
 Replace Downloads\InstallationMedia\sources\boot.wim with updated version
 Replace Downloads\InstallationMedia\sources\install.wim with updated version
 
-Run the script:
-https://github.com/TheDotSource/New-ISOFile/blob/main/New-ISOFile.ps1 #>
+Open newiso.ps1, follow the instructions and run the script #>
 
-<# Run either, the first uses a more sensible title, the second sues the original #>
+<# Run either, the first uses a more sensible title, the second uses the original #>
 New-ISOFile -source "Downloads\InstallationMedia" -destinationIso "Downloads\Win11_23H2_EnglishInternational_x64_Drivers.iso" -bootFile "Downloads\InstallationMedia\efi\microsoft\boot\efisys.bin" -title "Win11_23H2_EnglishUK"
 New-ISOFile -source "Downloads\InstallationMedia" -destinationIso "Downloads\Win11_23H2_EnglishInternational_x64_Drivers.iso" -bootFile "Downloads\InstallationMedia\efi\microsoft\boot\efisys.bin" -title "CCCOMA_X64FRE_EN-GB_DV9"
